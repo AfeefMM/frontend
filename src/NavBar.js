@@ -1,3 +1,5 @@
+import CounterButton from "./CounterButton";
+
 function NavBar(props){
     return(
         <nav className="navbar navbar-dark bg-dark">
