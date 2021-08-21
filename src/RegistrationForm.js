@@ -18,6 +18,8 @@ const RegistrationForm = () => {
     let avatarInput;
     let termsAndConditionsCheckbox;
 
+    const formData = new FormData();
+
     const register = () => {
 
 
@@ -51,7 +53,42 @@ const RegistrationForm = () => {
             setState("loading");
             setErrorsState([]);
             // 2.1 If the submission is successful, set state to "successful"
-            // 2.2 If the submission is successful, set state to "unsucessful"
+           
+            formData.append('firstName', firstNameField.value);
+            formData.append('lastName', lastNameField.value);
+            formData.append('email', emailField.value);
+            formData.append('password', passwordField.value);
+            formData.append('phoneNumber', phoneNumberField.value);
+
+            fetch(
+                `${process.env.REACT_APP_BACKEND}/users/create`,
+                {
+                    method:'POST',
+                    body: formData
+                }
+            )
+            .then(//the .json will convert a stringified obejct to a JS object
+                (backendResponseJson) => backendResponseJson.json()
+            )
+            .then(
+                (backendResponse) => {
+                    console.log(backendResponse);
+                    if(backendResponse.status === "successful"){
+                    setState("successful");
+                    }
+                    else{
+                        setState("unsuccessful");
+                    }
+                }
+            )
+                        // 2.2 If the submission is successful, set state to "unsucessful"
+            .catch(
+                (err) =>{
+                    console.log(err);
+                    setState("unsuccessful");
+                }
+            );
+
         }
 
     }
@@ -121,6 +158,10 @@ const RegistrationForm = () => {
             {
                 state === "successful" &&
                 <div className="alert alert-success">You have a successfully created an account</div>
+            }
+            {
+                state === "unsuccessful" &&
+                <div className="alert alert-danger">An error has occured. Please try again</div>
             }
 
             {
